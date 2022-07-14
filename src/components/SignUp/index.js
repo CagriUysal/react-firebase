@@ -85,10 +85,4 @@ function SignUpPage() {
   );
 }
 
-export const SignUpLink = () => (
-  <p>
-    Don&lsquo;t have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
-);
-
 export default SignUpPage;
