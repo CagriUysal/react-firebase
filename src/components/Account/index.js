@@ -1,7 +1,14 @@
 import React from "react";
 
+import PasswordChangeForm from "../PasswordChange";
+
 function AccountPage() {
-  return <h1>AccountPage</h1>;
+  return (
+    <div>
+      <h1>Account Page</h1>
+      <PasswordChangeForm />
+    </div>
+  );
 }
 
 export default AccountPage;
