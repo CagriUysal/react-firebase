@@ -27,11 +27,7 @@ function SignInPage() {
     event.preventDefault();
 
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      await signInWithEmailAndPassword(auth, email, password);
       setInfo(INITIAL_STATE);
       navigate(ROUTES.HOME);
     } catch (error) {
@@ -47,6 +43,11 @@ function SignInPage() {
       <h1>Sign In</h1>
       <p>
         Don&lsquo;t have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+      </p>
+      <p>
+        <p>
+          <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
+        </p>
       </p>
       <form onSubmit={handleSubmit}>
         <input
