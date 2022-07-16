@@ -32,7 +32,6 @@ function SignInPage() {
         email,
         password
       );
-      console.log(userCredential);
       setInfo(INITIAL_STATE);
       navigate(ROUTES.HOME);
     } catch (error) {
