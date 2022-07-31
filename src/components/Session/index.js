@@ -26,4 +26,8 @@ function CurrentUserProvider({ children }) {
   );
 }
 
+export function useCurrentUser() {
+  return useContext(CurrentUserContext);
+}
+
 export default CurrentUserProvider;
