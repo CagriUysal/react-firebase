@@ -1,9 +1,11 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { setDoc } from "firebase/firestore";
 
 import { ROUTES } from "../../constants/routes";
 import { FirebaseContext } from "../Firebase";
+import { setUser } from "../Firebase/db";
 
 const INITIAL_STATE = {
   username: "",
@@ -23,7 +25,13 @@ function SignUpPage() {
     event.preventDefault();
 
     try {
-      await createUserWithEmailAndPassword(auth, email, passwordOne);
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        passwordOne
+      );
+      await setUser(user.uid, { username, email });
+
       setInfo(INITIAL_STATE);
       navigate(ROUTES.HOME);
     } catch (error) {
