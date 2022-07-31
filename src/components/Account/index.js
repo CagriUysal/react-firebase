@@ -1,12 +1,14 @@
 import React from "react";
 
 import PasswordChangeForm from "../PasswordChange";
-import { withAuthorization } from "../Session";
+import { withAuthorization, useCurrentUser } from "../Session";
 
 function AccountPage() {
+  const currentUser = useCurrentUser();
+
   return (
     <div>
-      <h1>Account Page</h1>
+      <h1>Account: {currentUser.email} </h1>
       <PasswordChangeForm />
     </div>
   );

@@ -10,8 +10,6 @@ function PasswordForgetPage() {
   const [error, setError] = useState(null);
   const { auth } = useContext(FirebaseContext);
 
-  console.log(auth);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
