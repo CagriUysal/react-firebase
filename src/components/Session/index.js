@@ -1,7 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 import { FirebaseContext } from "../Firebase";
+import { ROUTES } from "../../constants/routes";
 
 export const CurrentUserContext = React.createContext(null);
 
@@ -28,6 +30,30 @@ function CurrentUserProvider({ children }) {
 
 export function useCurrentUser() {
   return useContext(CurrentUserContext);
+}
+
+export function useAuthorization(condition) {
+  const currentUser = useCurrentUser();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!condition(currentUser)) {
+      navigate(ROUTES.SIGN_IN);
+    }
+  }, []);
+}
+
+export function withAuthorization(condition) {
+  const HOC = (Component) => {
+    const WithAuthorization = (props) => {
+      useAuthorization(condition);
+      return <Component {...props} />;
+    };
+
+    return WithAuthorization;
+  };
+
+  return HOC;
 }
 
 export default CurrentUserProvider;
