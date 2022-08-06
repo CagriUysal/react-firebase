@@ -10,19 +10,24 @@ export const CurrentUserContext = React.createContext(null);
 
 function CurrentUserProvider({ children }) {
   const { auth } = useContext(FirebaseContext);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(
+    JSON.parse(localStorage.getItem("currentUser"))
+  );
 
   useEffect(function handleAuthStateChange() {
     const unSubscribe = onAuthStateChanged(auth, async (authUser) => {
       if (authUser === null) {
         setCurrentUser(null);
+        localStorage.removeItem("currentUser");
         return;
       }
 
       const dbUser = await getUser(authUser.uid);
       if (!dbUser.roles) dbUser.roles = {}; // default empty roles
 
-      setCurrentUser({ ...dbUser, uid: authUser.uid });
+      const currentUser = { ...dbUser, uid: authUser.uid };
+      setCurrentUser(currentUser);
+      localStorage.setItem("currentUser", JSON.stringify(currentUser));
     });
 
     return () => {
