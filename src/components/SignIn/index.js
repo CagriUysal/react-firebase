@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { FirebaseContext } from "../Firebase";
 import { ROUTES } from "../../constants/routes";
+import SignInWithGoogle from "./SignInWithGoogle";
 
 const INITIAL_STATE = {
   email: "",
@@ -69,6 +70,7 @@ function SignInPage() {
 
         {error && <p>{error.message}</p>}
       </form>
+      <SignInWithGoogle />
     </div>
   );
 }
