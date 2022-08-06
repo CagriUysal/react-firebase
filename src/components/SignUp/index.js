@@ -1,9 +1,9 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc } from "firebase/firestore";
 
 import { ROUTES } from "../../constants/routes";
+import { ROLES } from "../../constants/roles";
 import { FirebaseContext } from "../Firebase";
 import { setUser } from "../Firebase/db";
 
@@ -12,12 +12,13 @@ const INITIAL_STATE = {
   email: "",
   passwordOne: "",
   passwordTwo: "",
+  isAdmin: false,
 };
 
 function SignUpPage() {
   const navigate = useNavigate();
   const { auth } = useContext(FirebaseContext);
-  const [{ username, email, passwordOne, passwordTwo }, setInfo] =
+  const [{ username, email, passwordOne, passwordTwo, isAdmin }, setInfo] =
     useState(INITIAL_STATE);
   const [error, setError] = useState(null);
 
@@ -30,7 +31,13 @@ function SignUpPage() {
         email,
         passwordOne
       );
-      await setUser(user.uid, { username, email });
+
+      const roles = {};
+      if (isAdmin) {
+        roles[ROLES.ADMIN] = ROLES.ADMIN;
+      }
+
+      await setUser(user.uid, { username, email, roles });
 
       setInfo(INITIAL_STATE);
       navigate(ROUTES.HOME);
@@ -44,6 +51,13 @@ function SignUpPage() {
     setInfo((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
+    }));
+  };
+
+  const handleCheck = (event) => {
+    setInfo((prev) => ({
+      ...prev,
+      [event.target.name]: event.target.checked,
     }));
   };
 
@@ -83,6 +97,15 @@ function SignUpPage() {
           type="password"
           placeholder="Confirm Password"
         />
+        <label>
+          Admin:
+          <input
+            name="isAdmin"
+            type="checkbox"
+            checked={isAdmin}
+            onChange={handleCheck}
+          />
+        </label>
         <button disabled={isInvalid} type="submit">
           Sign Up
         </button>

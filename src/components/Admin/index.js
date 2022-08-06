@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { onSnapshot, query } from "firebase/firestore";
+
 import { getUsersRef } from "../Firebase/db";
+import { withAuthorization } from "../Session";
+import { ROLES } from "../../constants/roles";
 
 function AdminPage() {
   const [{ users, loading }, setState] = useState({ users: [], loading: true });
@@ -21,6 +24,7 @@ function AdminPage() {
   return (
     <>
       <h1>AdminPage</h1>
+      <p>The Admin Page is accessible by every signed in admin user.</p>
       {loading && <div>Loading ...</div>}
       <UserList users={users} />
     </>
@@ -45,4 +49,7 @@ const UserList = ({ users }) => (
   </ul>
 );
 
-export default AdminPage;
+const condition = (currentUser) =>
+  currentUser && !!currentUser.roles[ROLES.ADMIN];
+
+export default withAuthorization(condition)(AdminPage);

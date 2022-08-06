@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { FirebaseContext } from "../Firebase";
 import { ROUTES } from "../../constants/routes";
+import { getUser } from "../Firebase/db";
 
 export const CurrentUserContext = React.createContext(null);
 
@@ -12,8 +13,16 @@ function CurrentUserProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(function handleAuthStateChange() {
-    const unSubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    const unSubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser === null) {
+        setCurrentUser(null);
+        return;
+      }
+
+      const dbUser = await getUser(authUser.uid);
+      if (!dbUser.roles) dbUser.roles = {}; // default empty roles
+
+      setCurrentUser({ ...dbUser, uid: authUser.uid });
     });
 
     return () => {
