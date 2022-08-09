@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
-import { FirebaseContext } from "../Firebase";
+import { auth, FirebaseContext } from "../Firebase";
 import { ROUTES } from "../../constants/routes";
 import { getUser } from "../Firebase/db";
 
@@ -25,7 +25,12 @@ function CurrentUserProvider({ children }) {
       const dbUser = await getUser(authUser.uid);
       if (!dbUser.roles) dbUser.roles = {}; // default empty roles
 
-      const currentUser = { ...dbUser, uid: authUser.uid };
+      const currentUser = {
+        ...dbUser,
+        uid: authUser.uid,
+        emailVerified: authUser.emailVerified,
+        provoderData: authUser.providerData,
+      };
       setCurrentUser(currentUser);
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
     });
@@ -59,6 +64,9 @@ export function withAuthorization(condition) {
       }, [currentUser]);
 
       if (!currentUser) return null;
+      if (!currentUser.emailVerified) {
+        return <EmailNotVerified />;
+      }
 
       return <Component {...props} />;
     };
@@ -67,6 +75,38 @@ export function withAuthorization(condition) {
   };
 
   return HOC;
+}
+
+function EmailNotVerified() {
+  const [isSent, setIsSent] = useState(false);
+
+  const handleEmailSend = async () => {
+    await sendEmailVerification(auth.currentUser, {
+      url: "http://localhost:3000",
+    });
+    setIsSent(true);
+  };
+
+  return (
+    <div>
+      {isSent ? (
+        <p>
+          E-Mail confirmation sent: Check you E-Mails (Spam folder included) for
+          a confirmation E-Mail. Refresh this page once you confirmed your
+          E-Mail.
+        </p>
+      ) : (
+        <p>
+          Verify your E-Mail: Check your E-Mails (Spam folder included) for a
+          confirmation E-Mail or send another confirmation E-Mail.
+        </p>
+      )}
+
+      <button type="button" onClick={handleEmailSend} disabled={isSent}>
+        Send confirmation E-Mail
+      </button>
+    </div>
+  );
 }
 
 export default CurrentUserProvider;

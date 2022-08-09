@@ -1,6 +1,9 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 import { ROUTES } from "../../constants/routes";
 import { ROLES } from "../../constants/roles";
@@ -38,6 +41,7 @@ function SignUpPage() {
       }
 
       await setUser(user.uid, { username, email, roles });
+      await sendEmailVerification(user, { url: "http://localhost:3000" });
 
       setInfo(INITIAL_STATE);
       navigate(ROUTES.HOME);

@@ -46,9 +46,7 @@ function SignInPage() {
         Don&lsquo;t have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
       </p>
       <p>
-        <p>
-          <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
-        </p>
+        <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
       </p>
       <form onSubmit={handleSubmit}>
         <input
