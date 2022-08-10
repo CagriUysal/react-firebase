@@ -24,7 +24,7 @@ function App() {
         <Route path={ROUTES.PASSWORD_FORGET} element={<PasswordForgetPage />} />
         <Route path={ROUTES.HOME} element={<HomePage />} />
         <Route path={ROUTES.ACCOUNT} element={<AccountPage />} />
-        <Route path={ROUTES.ADMIN} element={<AdminPage />} />
+        <Route path={`${ROUTES.ADMIN}/*`} element={<AdminPage />} />
       </Routes>
     </Router>
   );
